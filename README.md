@@ -27,10 +27,13 @@ python gpt.py
 Hyperparameters are a block at the top of `gpt.py` — edit the numbers, run the
 file. Runs on CUDA, Apple Silicon (MPS), or CPU, whichever it finds.
 
-## What comes out
+## What comes out — and what scale buys
 
-After 5000 steps of the small default config (~67k parameters), the model
-writes text like this:
+Two configurations, same code, same data, 5000 steps each. (Samples are shown
+as code blocks on purpose: GitHub renders `$...$` as real LaTeX, and the small
+model's LaTeX does not survive that.)
+
+**Small** (`n_embd=48`, 2 blocks, `block_size=32` — ~67k parameters):
 
 ```text
 We by decayns. Hown becom uncaly the QCDNCL emitate, and centroles ship
@@ -39,16 +42,32 @@ bonated eynisficiles for the rotak' lecusively lighting vanrop to malough
 T^{D}^{-}^2$
 ```
 
-(Shown as a code block on purpose: GitHub renders `$...$` as real LaTeX, and
-this model's LaTeX is not yet valid enough to survive that.)
+It has learned the *shape* of a physics abstract — LaTeX-ish math, plausible
+jargon morphology — but it cannot spell `\Omega`, and with a 32-character
+window it literally cannot see an opening `$` when it emits the closing one.
 
-It has learned the *shape* of a physics abstract — LaTeX-ish math, "We show
-that...", plausible jargon morphology — but not yet how to spell `\Omega` or
-close a bracket. Both are expected at this scale: a character-level model has
-to memorize every command letter-by-letter, and the default context window
-(32 characters) is too short to see an opening `$` when it emits the closing
-one. Scaling up `n_embd`, `Nx`, and `block_size` fixes both; so, eventually,
-does a real tokenizer.
+**Scaled up** (`n_embd=192`, `nhead=6`, 4 blocks, `block_size=128` — ~1.8M
+parameters, sample in `data/generated_text2.txt`):
+
+```text
+Than strategies the SNR separation is through origin $S_h^{1/2} \sim m_i/(N)$,
+$Z_{cs}$, and $U(1)'$, $Z_X$ is mixpressed. Specificantly, the classes of
+electrons are presented in quasi-PDF associated with the CKM selected sectors
+remain only a photon locality of interactions studied by a tanalytic scaling
+systemption [...] the first likelihood-based terms have discrete hole models,
+consistent effective theory
+```
+
+Same architecture, ~27x the parameters and 4x the context window, and the
+failures move up a level: the LaTeX is now mostly *valid* ($S_h^{1/2}$,
+$Z_{cs}$, $U(1)'$ — spelled, subscripted, and closed), the vocabulary is real
+(CKM, quasi-PDF, LHCb, Hermitian), and what's left is that the sentences mean
+nothing. Spelling and syntax were capacity problems; meaning is not, and no
+amount of `n_embd` at this corpus size will buy it. That boundary — which
+failures scale fixes and which it doesn't — is the most instructive thing this
+repo produces. A real tokenizer (BPE) is the next lever: it turns `\alpha_s`
+from eight memorized characters into one unit, and spends the freed capacity
+above the character level.
 
 ## Files
 
