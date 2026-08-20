@@ -1,0 +1,5 @@
+__pycache__/
+.ipynb_checkpoints/
+data/generated_text.txt
+*.pt
+.DS_Store
