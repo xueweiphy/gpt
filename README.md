@@ -32,10 +32,15 @@ file. Runs on CUDA, Apple Silicon (MPS), or CPU, whichever it finds.
 After 5000 steps of the small default config (~67k parameters), the model
 writes text like this:
 
-> We by decayns. Hown becom uncaly the QCDNCL emitate, and centroles ship
-> bonated eynisficiles for the rotak' lecusively lighting vanrop to malough
-> [...] only $\phrande^$ \sim and frameterpondificing indersum $\Ombreq
-> T^{D}^{-}^2$
+```text
+We by decayns. Hown becom uncaly the QCDNCL emitate, and centroles ship
+bonated eynisficiles for the rotak' lecusively lighting vanrop to malough
+[...] only $\phrande^$ \sim and frameterpondificing indersum $\Ombreq
+T^{D}^{-}^2$
+```
+
+(Shown as a code block on purpose: GitHub renders `$...$` as real LaTeX, and
+this model's LaTeX is not yet valid enough to survive that.)
 
 It has learned the *shape* of a physics abstract — LaTeX-ish math, "We show
 that...", plausible jargon morphology — but not yet how to spell `\Omega` or
